@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface PaginationProps {
   totalPages: number;
@@ -12,14 +12,18 @@ const Pagination: React.FC<PaginationProps> = ({
   currentPage,
 }) => {
   const [inputPage, setInputPage] = useState(currentPage);
-
+  useEffect(() => {
+    setInputPage(currentPage);
+  }, [currentPage]);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputPage(Number(e.target.value));
   };
-
   const handlePageSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    paginate(inputPage);
+    if (inputPage >= 1 && inputPage <= totalPages) {
+      paginate(inputPage);
+      console.log("Go button clicked, page:", inputPage);
+    }
   };
 
   return (
