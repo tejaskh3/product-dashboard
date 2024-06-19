@@ -6,3 +6,9 @@ export interface Order {
   quantity: number;
   order_value: number;
 }
+
+export const ProductPrice = {
+  "Product 1": 29,
+  "Product 2": 49,
+  "Product 3": 149,
+};
