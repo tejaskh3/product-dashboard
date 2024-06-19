@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Order, ProductPrice } from "../ordersData";
+import { Order, ProductPrice } from "../types/ordersData";
 
 interface OrderItemProps {
   order: Order;

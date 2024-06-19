@@ -1,44 +1,62 @@
 import React, { useState } from "react";
-import ordersData from "./orders.json"; //
-import { Order } from "./ordersData";
+import ordersData from "./orders.json";
+import { Order } from "./types/ordersData";
+import { UserInfo } from "./types/user";
 import Header from "./components/Header";
-import OrderItem from "./components/OrderItem";
-import Pagination from "./components/Pagination";
 import OrderTable from "./components/OrderTable";
-import "./index.css";
+import { useAuth0 } from "@auth0/auth0-react";
+import LoginButton from "./components/LoginButton";
 
 const App: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>(ordersData);
-  const [currentPage, setCurrentPage] = useState(1);
-  const ordersPerPage = 20;
+  const [orders, setOrders] = useState<any>(ordersData);
+  const [filteredOrders, setFilteredOrders] = useState<any>(ordersData);
+  const { user } = useAuth0();
 
-  // Calculate total pages
-  const totalPages = Math.ceil(orders.length / ordersPerPage);
+  if (!user) {
+    return <LoginButton />;
+  }
 
-  // Get current orders
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const { email, given_name, picture } = (user as UserInfo) || {};
 
-  // Change page
-  const paginate = (pageNumber: number) => {
-    if (pageNumber > 0 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
+  const handleSearch = (searchTerm: string) => {
+    // Filter orders based on searchTerm
+    const filtered = orders?.filter((order: Order) =>
+      Object.values(order).some((value) =>
+        value
+          ?.toString()
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase().trim())
+      )
+    );
+    setFilteredOrders(filtered);
   };
 
   const handleDelete = (id: string) => {
-    setOrders(orders.filter((order) => order.id !== id));
+    setOrders(orders?.filter((order: Order) => order.id !== id));
+    setFilteredOrders(filteredOrders.filter((order: Order) => order.id !== id));
   };
 
   const handleEdit = (id: string, updatedOrder: Order) => {
-    setOrders(orders.map((order) => (order.id === id ? updatedOrder : order)));
+    const updatedOrders = orders.map((order: Order) =>
+      order.id === id ? updatedOrder : order
+    );
+    setOrders(updatedOrders);
+    setFilteredOrders(updatedOrders);
   };
 
   return (
     <div className="container mx-auto p-10 overflow-hidden">
-      <Header />
-      <OrderTable orders={orders} onDelete={handleDelete} onEdit={handleEdit} />
+      <Header
+        userName={given_name}
+        userEmail={email}
+        userPicture={picture}
+        onSearch={handleSearch}
+      />
+      <OrderTable
+        orders={filteredOrders}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+      />
     </div>
   );
 };

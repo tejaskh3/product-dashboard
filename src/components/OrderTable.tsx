@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Order } from "../ordersData";
+import React, { useState, useEffect } from "react";
+import { Order } from "../types/ordersData";
 import OrderItem from "./OrderItem";
 import Pagination from "./Pagination";
 
@@ -16,16 +16,14 @@ const OrderTable: React.FC<OrderTableProps> = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 20;
-
-  // Calculate total pages
   const totalPages = Math.ceil(orders.length / ordersPerPage);
 
-  // Get current orders
+  // get orders for current page number
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
 
-  // Change page
+  // for changing the page
   const paginate = (pageNumber: number) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
@@ -35,18 +33,22 @@ const OrderTable: React.FC<OrderTableProps> = ({
   return (
     <div className="container mx-auto p-4 md:p-10 overflow-hidden">
       <h1 className="text-2xl font-bold mb-4 text-center">Orders</h1>
-      <div className="overflow-x-auto">
-        <ul className="w-full">
-          {currentOrders.map((order: Order) => (
-            <OrderItem
-              key={order.id}
-              order={order}
-              onDelete={onDelete}
-              onEdit={onEdit}
-            />
-          ))}
-        </ul>
-      </div>
+      {orders.length === 0 ? (
+        <h1 className="text-5xl font-bold mb-4 text-center">No orders found</h1>
+      ) : (
+        <div className="overflow-x-auto">
+          <ul className="w-full">
+            {currentOrders.map((order: Order) => (
+              <OrderItem
+                key={order.id}
+                order={order}
+                onDelete={onDelete}
+                onEdit={onEdit}
+              />
+            ))}
+          </ul>
+        </div>
+      )}
       <Pagination
         totalPages={totalPages}
         paginate={paginate}
