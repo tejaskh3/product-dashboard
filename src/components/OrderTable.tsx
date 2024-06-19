@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Order } from "../types/ordersData";
 import OrderItem from "./OrderItem";
 import Pagination from "./Pagination";
