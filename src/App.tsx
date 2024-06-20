@@ -6,21 +6,30 @@ import Header from "./components/Header";
 import OrderTable from "./components/OrderTable";
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "./components/LoginButton";
+import { useDispatch, useSelector } from "react-redux";
+import { login, logout } from "./redux/userSlice";
 
 const App: React.FC = () => {
   const [orders, setOrders] = useState<any>(ordersData);
   const [filteredOrders, setFilteredOrders] = useState<any>(ordersData);
-  const { user } = useAuth0();
-
+  const { user, isAuthenticated } = useAuth0();
+  const userDetails = useSelector((state: any) => state.user);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      const { email, given_name, picture } = user as UserInfo;
+      dispatch(login({ email, given_name, picture }));
+    } else {
+      dispatch(logout());
+    }
+  }, [isAuthenticated, user, dispatch]);
   useEffect(() => {
     setFilteredOrders(orders);
   }, [orders]);
 
-  if (!user) {
+  if (!isAuthenticated && !userDetails.isLoggedIn) {
     return <LoginButton />;
   }
-
-  const { email, given_name, picture } = (user as UserInfo) || {};
 
   const handleSearch = (searchTerm: string) => {
     // Filter orders based on searchTerm
@@ -51,9 +60,9 @@ const App: React.FC = () => {
   return (
     <div className="container mx-auto p-10 overflow-hidden">
       <Header
-        userName={given_name}
-        userEmail={email}
-        userPicture={picture}
+        userName={userDetails.given_name}
+        userEmail={userDetails.email}
+        userPicture={userDetails.picture}
         onSearch={handleSearch}
       />
       <OrderTable
