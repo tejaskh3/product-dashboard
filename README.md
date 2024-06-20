@@ -1,30 +1,23 @@
-# React + TypeScript + Vite
+# Business Owner Orders Management Web Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This web application allows a business owner to log in via Google (using Auth0 for authentication). After logging in, the owner can view their account details at the top-left side of the screen and see a list of 2,000 random orders.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **User Authentication**: Log in via Google using Auth0.
+- **User Details**: View account details (name, email, profile picture) after logging in.
+- **Order Management**: Display, search, delete, and edit a list of 2,000 random orders.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Frontend**: React, TypeScript, Tailwind CSS
+- **State Management**: Redux, Redux Toolkit, Redux Persist
+- **Authentication**: Auth0
 
-- Configure the top-level `parserOptions` property like this:
+## Project Structure
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- **App Component**: Handles authentication state, displays user details and order table.
+- **Header Component**: Displays user details and a search bar.
+- **OrderTable Component**: Manages and displays orders with pagination, edit, and delete functionality.
+- **CreateOrderModal Component**: Allows creation of new orders.
+- **Redux Store**: Manages global state and persists state across sessions using Redux Persist.
