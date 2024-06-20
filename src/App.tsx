@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ordersData from "./orders.json";
 import { Order } from "./types/ordersData";
 import { UserInfo } from "./types/user";
@@ -11,6 +11,10 @@ const App: React.FC = () => {
   const [orders, setOrders] = useState<any>(ordersData);
   const [filteredOrders, setFilteredOrders] = useState<any>(ordersData);
   const { user } = useAuth0();
+
+  useEffect(() => {
+    setFilteredOrders(orders);
+  }, [orders]);
 
   if (!user) {
     return <LoginButton />;
@@ -56,6 +60,7 @@ const App: React.FC = () => {
         orders={filteredOrders}
         onDelete={handleDelete}
         onEdit={handleEdit}
+        setOrders={setOrders}
       />
     </div>
   );
